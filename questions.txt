@@ -1,0 +1,20 @@
+Tại sao không nên dùng mạng NAT để xây dựng cụm Docker Swarm?
+🔍 Lý do chính: Mạng NAT trong VirtualBox không hỗ trợ giao tiếp trực tiếp giữa các máy ảo.
+
+1️⃣ NAT không cho phép máy ảo giao tiếp trực tiếp với nhau
+Cụm Docker Swarm cần các node giao tiếp với nhau để đồng bộ dịch vụ và quản lý cluster.
+Trong VirtualBox, mạng NAT không cho phép các máy ảo trong cùng NAT giao tiếp với nhau trực tiếp.
+Mỗi máy ảo chỉ có thể truy cập ra ngoài Internet, nhưng không thể kết nối với máy ảo khác trong NAT.
+📌 Tóm lại: Nếu bạn dùng NAT, các node worker trong Swarm không thể kết nối với manager node.
+
+--------------------------------
+🔑 Docker Swarm Token là gì?
+Token trong Docker Swarm là một mã bảo mật dùng để xác thực và kết nạp node vào cụm Swarm.
+
+1️⃣ Token dùng để làm gì?
+Khi bạn tạo một cụm Docker Swarm (docker swarm init), hệ thống sẽ tạo ra token riêng biệt để:
+
+Thêm node mới vào cụm (join cluster).
+Phân loại node (manager hoặc worker).
+Bảo vệ cụm bằng cách chỉ cho phép các node có token hợp lệ tham gia.
+📌 Tóm lại: Token giúp bảo mật cụm Swarm và đảm bảo chỉ những node được cấp phép mới có thể tham gia.

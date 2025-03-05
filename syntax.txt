@@ -1,0 +1,74 @@
+#interfaces(5) file used by ifup(8) and ifdown(8) 
+#Include files from /etc/network/interfaces.d:
+source /etc/network/interfaces.d/*
+
+auto lo
+
+iface lo inet loopback
+
+auto enp0s3
+iface enp0s3 inet dhcp
+
+auto enp0s8
+iface enp0s8 inet static
+address 192.168.56.101
+
+___________________________________________________________
+
+sudo ip link set enp0s8 up
+
+sudo ip addr add 192.168.56.101/24 dev enp0s8
+
+sudo docker build -t rng .
+
+sudo docker network create --scope=swarm --attachable -d overlay --opt encrypted coinswarmnet
+
+sudo docker service rm rng
+
+sudo docker service ps rng
+
+sudo docker node update --availaability drain vps0 -> Giải pháp để hệ thống High Availability(HA)
+
+sudo docker service scale worker=10 -> Tạo thêm các worker, Auto Scaling, Load balancing (Cân bằng tải hệ thống)
+
+sudo docker service ls
+
+sudo docker service ps worker
+____________________________________________________________
+
+sudo docker-compose -f docker-compose.yml up
+
+sudo docker-compose -f docker-compose.yml up -d 
+
+sudo docker-compose ps
+
+sudo docker-compose -f docker-compose.yml down
+
+sudo docker ps -a
+
+sudo docker image prune -a
+
+master-slave
+
+
+_____________________________
+
+sudo docker swarm node ls -> Xem các máy đang chạy
+
+sudo docker swarm
+
+sudo docker swarm init --advertise-addr 192.168.100.101
+
+sudo docker info -> Xem trạng thái node đang hoạt động
+
+sudo docker swarm join-token worker -> Xem token
+
+sudo docker swarm join --token SWMTKN-1-67fl7fbrt8hnm4195b3f2i0l667qnn6utjlm7rn47bcj6eofpv-ahrft1zql2ex8uthjqgv36ysg 192.168.100.101:2377 = dùng token để các máy khác join
+
+sudo docker swarm leave -> worker roi khoi
+
+sudo docker swarm leave-force -> manager roi khoi
+
+sudo docker node rm <ten worker node>
+
+sudo docker node demote vps1
