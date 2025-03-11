@@ -3,7 +3,6 @@
 source /etc/network/interfaces.d/*
 
 auto lo
-
 iface lo inet loopback
 
 auto enp0s3
@@ -19,6 +18,17 @@ worker post hasher
 worker TCP redis <---- webui <----- user
 ------------------------------------------
 Redis là một cơ sở dữ liệu NoSQL dạng key-value cực kỳ nhanh, thường được dùng để cache, message broker hoặc lưu trữ session.
+
+sudo hostname
+sudo hostnamectl set-hosstname vps0
+sudo shutdown now
+
+
+sudo docker service create --name hasher -p 8002:80 --network coinswarmnet ctmyname/hasher:coinswarm
+sudo docker service create --name redis redis:latest
+sudo docker service create --name rng -p 8001:80 --network coinswarmnet ctmyname/rng:coinswarm
+sudo docker service create --name webui -p 8004:80 --network coinswarmnet ctmyname/webui:coinswarm
+sudo docker service create --name worker -p 8003:80 --network coinswarmnet ctmyname/worker:coinswarm
 ___________________________________________________________
 
 sudo ip link set enp0s8 up
@@ -26,6 +36,10 @@ sudo ip link set enp0s8 up
 sudo ip addr add 192.168.56.101/24 dev enp0s8
 
 sudo docker build -t rng .
+
+sudo docker tag hasher ctmyname/hasher:coinswarm
+
+sudo docker push ctmyname/hasher:coinswarm
 
 sudo docker network create --scope=swarm --attachable -d overlay --opt encrypted coinswarmnet -> Lệnh này tạo một mạng overlay trong Docker Swarm với các tùy chọn bảo mật và khả năng kết nối linh hoạt.
 
@@ -40,6 +54,8 @@ sudo docker service scale worker=10 -> Tạo thêm các worker, Auto Scaling, Lo
 sudo docker service ls
 
 sudo docker service ps worker
+
+sudo docker service update --force hasher
 ____________________________________________________________
 
 sudo docker-compose -f docker-compose.yml up
@@ -53,6 +69,8 @@ sudo docker-compose -f docker-compose.yml down
 sudo docker ps -a
 
 sudo docker image prune -a
+
+sudo docker system prune -a
 
 master-slave
 
@@ -76,6 +94,27 @@ sudo docker swarm leave-force -> manager roi khoi
 
 sudo docker node rm <ten worker node>
 
+sudo docker node promote vps1 -> Thanh manager
+
 sudo docker node demote vps1
 
 sudo docker node ls -> xem node
+
+sudo docker node vps8 -> xem node
+
+docker swarm join-token manager
+
+---------------
+Memory
+sudo top
+
+I/O usage
+sudo vmstat 3
+
+Tiến hành đo lường latency của response time các dịch vụ rng và hasher
+rng
+sudo httping -c 10 localhost:8001
+
+hasher
+sudo httping -c 10 localhost:8002
+
