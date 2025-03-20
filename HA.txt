@@ -1,0 +1,39 @@
+sudo docker rmi image1 image2 image3 
+
+docker image prune -a
+
+////////////
+
+sudo docker service rm <service_name>
+
+sudo docker pull ctmyname/webui:coinswarmnet
+
+sudo docker service create --name redis --network coinswarmnet redis
+sudo docker service create --name rng -p 8001:80 --network coinswarmnet ctmyname/rng:coinswarm
+sudo docker service create --name hasher -p 8002:80 --network coinswarmnet ctmyname/hasher:coinswarm
+sudo docker service create --name worker --network coinswarmnet ctmyname/worker:coinswarm
+sudo docker service create --name webui -p 8000:80 --network coinswarmnet ctmyname/webui:coinswarm
+
+sudo docker service rm my_service
+
+sudo docker node update --availability drain vps0 -> Giải pháp để hệ thống High Availability(HA)
+- Node vps0 sẽ không nhận thêm container mới trong Docker Swarm.
+- Các service đang chạy trên vps0 sẽ được di chuyển sang node khác nếu có.
+- Node vẫn sẽ là thành viên của Swarm nhưng không chạy workload.
+
+Trạng thái	Ý nghĩa
+active	Node có thể nhận và chạy container bình thường.
+pause	Node không nhận workload mới nhưng vẫn chạy container hiện tại.
+drain	Node không nhận workload mới và container đang chạy sẽ bị di chuyển đi.
+
+sudo docker network create --scope=swarm --attachable -d overlay --opt encrypted coinswarmnet 
+- Lệnh này tạo một mạng overlay trong Docker Swarm với các tùy chọn bảo mật và khả năng kết nối linh hoạt.
+- Lệnh này tạo một mạng (network) kiểu overlay trong Docker Swarm, dùng để liên kết các container trên nhiều node trong cluster.
+
+sudo	Chạy lệnh với quyền root (nếu cần).
+docker network create	Tạo một mạng mới trong Docker.
+--scope=swarm	Xác định mạng này thuộc Swarm mode (dùng cho các service trong Docker Swarm).
+--attachable	Cho phép container độc lập (không thuộc service nào) kết nối vào mạng này.
+-d overlay	Chọn driver overlay, giúp các container trên nhiều node giao tiếp với nhau.
+--opt encrypted	Bật mã hóa dữ liệu truyền giữa các container trên mạng này (tăng bảo mật).
+coinswarmnet	Tên của mạng, bạn có thể đổi theo ý muốn.

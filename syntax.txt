@@ -23,12 +23,12 @@ sudo hostname
 sudo hostnamectl set-hosstname vps0
 sudo shutdown now
 
-
-sudo docker service create --name hasher -p 8002:80 --network coinswarmnet ctmyname/hasher:coinswarm
-sudo docker service create --name redis redis:latest
+sudo docker service create --name redis --network coinswarmnet redis
 sudo docker service create --name rng -p 8001:80 --network coinswarmnet ctmyname/rng:coinswarm
-sudo docker service create --name webui -p 8004:80 --network coinswarmnet ctmyname/webui:coinswarm
-sudo docker service create --name worker -p 8003:80 --network coinswarmnet ctmyname/worker:coinswarm
+sudo docker service create --name hasher -p 8002:80 --network coinswarmnet ctmyname/hasher:coinswarm
+sudo docker service create --name worker --network coinswarmnet ctmyname/worker:coinswarm
+sudo docker service create --name webui -p 8000:80 --network coinswarmnet ctmyname/webui:coinswarm
+
 ___________________________________________________________
 
 sudo ip link set enp0s8 up
@@ -42,6 +42,8 @@ sudo docker tag hasher ctmyname/hasher:coinswarm
 sudo docker push ctmyname/hasher:coinswarm
 
 sudo docker network create --scope=swarm --attachable -d overlay --opt encrypted coinswarmnet -> Lệnh này tạo một mạng overlay trong Docker Swarm với các tùy chọn bảo mật và khả năng kết nối linh hoạt.
+
+Lệnh này tạo một mạng (network) kiểu overlay trong Docker Swarm, dùng để liên kết các container trên nhiều node trong cluster.
 
 sudo docker service rm rng
 
@@ -73,6 +75,8 @@ sudo docker image prune -a
 sudo docker system prune -a
 
 master-slave
+
+sudo docker rmi <image>
 
 _____________________________
 
